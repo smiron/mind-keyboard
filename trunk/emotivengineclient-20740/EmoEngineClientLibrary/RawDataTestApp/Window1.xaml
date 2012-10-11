@@ -1,0 +1,83 @@
+﻿<!-- Copyright © 2010 James Galasyn -->
+<Window x:Class="RawDataTestApp.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="EmotivEngine Realtime Client" Height="454" Width="838" Background="#FF000033" Foreground="#FF33FFFF" 
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:emoclient="clr-namespace:EmoEngineClientLibrary;assembly=EmoEngineClientLibrary"
+    xmlns:eecontrol="clr-namespace:EmoEngineControlLibrary;assembly=EmoEngineControlLibrary"
+    xmlns:local="clr-namespace:RawDataTestApp" Loaded="Window_Loaded" Closing="Window_Closing">
+
+    <Window.Resources>
+        <emoclient:EmoEngineClient x:Key="emoEngineClient" />
+        <local:BoolToBrushConverter x:Key="boolToBrushConverter" />
+
+        <SolidColorBrush x:Key="VaLightBlueBrush" Color="#FF33FFFF" />
+        <SolidColorBrush x:Key="VaDarkBlueBrush" Color="#FF000033" />
+        <SolidColorBrush x:Key="VaMedBlueBrush" Color="#FF3364FF" />
+        <SolidColorBrush x:Key="VaHeaderBrush" Color="#FF333366" />
+        <SolidColorBrush x:Key="VaLightBorderBrush" Color="#FF666699" />
+        <SolidColorBrush x:Key="VaDarkBorderBrush" Color="#FF333366" />
+
+        
+        <!--<emotiv:EdkDll x:Key="edkdll"/>-->
+        <emoclient:ChannelNameList x:Key="channelsToDisplay">
+            <sys:String>AF3</sys:String>
+            <sys:String>AF4</sys:String>
+            <sys:String>COUNTER</sys:String>
+            <sys:String>F3</sys:String>
+            <sys:String>F4</sys:String>
+            <sys:String>F7</sys:String>
+            <sys:String>F8</sys:String>
+            <sys:String>FC5</sys:String>
+            <sys:String>FC6</sys:String>
+            <sys:String>O1</sys:String>
+            <sys:String>O2</sys:String>
+            <sys:String>P7</sys:String>
+            <sys:String>P8</sys:String>
+            <sys:String>T7</sys:String>
+            <sys:String>T8</sys:String>
+        </emoclient:ChannelNameList>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="231.469*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1" Name="stackPanel1" Orientation="Horizontal">
+            <Button Height="23" Name="_startEmoEngineButton" Width="Auto" Click="_startEmoEngineButton_Click" IsEnabled="{Binding Source={StaticResource emoEngineClient}, Path=CanStartEmoEngine }">Start EmoEngine</Button>
+            <Button Height="23" Name="_startButton" Width="Auto" Click="_startButton_Click" IsEnabled="{Binding Source={StaticResource emoEngineClient}, Path=CanStartPolling }">Start Data Polling</Button>
+            <Button Height="23" Name="_stopButton" Width="Auto" Click="_stopButton_Click" IsEnabled="{Binding Source={StaticResource emoEngineClient}, Path=CanStopPolling }">Stop Data Polling</Button>
+        </StackPanel>
+        <DockPanel >
+
+            <eecontrol:NeuroHeadsetStatusControl HeadsetDataSource="{StaticResource emoEngineClient}" BorderBrush="{StaticResource VaLightBorderBrush}" BorderThickness="1" >
+
+            </eecontrol:NeuroHeadsetStatusControl>
+
+            <Grid x:Name="_neuroDataGrid" HorizontalAlignment="Stretch" Height="Auto" Width="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="139.695*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Name="label1" VerticalContentAlignment="Center" Padding="0" Foreground="{StaticResource VaLightBlueBrush}">Polling</Label>
+                <Label Grid.Column="1" Name="label3" Background="{Binding Source={StaticResource emoEngineClient}, Path=IsPolling, Converter={StaticResource boolToBrushConverter} }" ></Label>
+                <Label Name="label2" Grid.Row="1" VerticalContentAlignment="Center" Padding="0" Foreground="{StaticResource VaLightBlueBrush}" >Sampling Rate</Label>
+                <Label Grid.Column="1" Grid.Row="1" Name="label4" Content="{Binding Source={StaticResource emoEngineClient}, Path=SamplingRate}" Foreground="{StaticResource VaLightBlueBrush}" ></Label>
+                <Label  Grid.Row="2" VerticalContentAlignment="Center" Padding="0" Foreground="{StaticResource VaLightBlueBrush}">Buffer Size</Label>
+                <Label Grid.Column="1" Grid.Row="2" Content="{Binding Source={StaticResource emoEngineClient}, Path=BufferSize}" Foreground="{StaticResource VaLightBlueBrush}"></Label>
+                <eecontrol:NeuroDataControl x:Name="_neuroDataControl" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" DataFrameSource="{StaticResource emoEngineClient}" ChannelsToDisplay="{StaticResource channelsToDisplay}" HorizontalAlignment="Stretch" BorderBrush="{StaticResource VaLightBorderBrush}" Foreground="{StaticResource VaLightBlueBrush}" />
+                <Label Height="28" Name="_watermarkLabel" Foreground="#99FFFFFF" Grid.Column="1" Margin="0" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto">Copyright © James Galasyn 2010</Label>
+
+            </Grid>
+
+        </DockPanel>
+    </Grid>
+</Window>
