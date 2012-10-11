@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmoEngineClientLibrary", "EmoEngineClientLibrary\EmoEngineClientLibrary.csproj", "{630D8A3E-6592-4648-B30E-02A38AD85F96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RawDataTestApp", "RawDataTestApp\RawDataTestApp.csproj", "{FCAA429A-E8B7-4401-98AC-54C8746B915D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmoEngineControlLibrary", "..\EmoEngineControlLibrary\EmoEngineControlLibrary.csproj", "{B1D96A23-A7B3-4BA8-8092-C02E39462845}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{630D8A3E-6592-4648-B30E-02A38AD85F96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{630D8A3E-6592-4648-B30E-02A38AD85F96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{630D8A3E-6592-4648-B30E-02A38AD85F96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{630D8A3E-6592-4648-B30E-02A38AD85F96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCAA429A-E8B7-4401-98AC-54C8746B915D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAA429A-E8B7-4401-98AC-54C8746B915D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCAA429A-E8B7-4401-98AC-54C8746B915D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCAA429A-E8B7-4401-98AC-54C8746B915D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1D96A23-A7B3-4BA8-8092-C02E39462845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1D96A23-A7B3-4BA8-8092-C02E39462845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1D96A23-A7B3-4BA8-8092-C02E39462845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1D96A23-A7B3-4BA8-8092-C02E39462845}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
