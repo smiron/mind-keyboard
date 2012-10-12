@@ -710,18 +710,22 @@ namespace EmoEngineClientLibrary
                 // Block for DataPollingPeriod milliseconds.
                 Thread.Sleep( this.DataPollingPeriod );
 
-                // Query the neuroheadset for data.
-                Dictionary<EE_DataChannel_t, double[]> currentData = this.EmotivEngine.GetData( this.UserID );
+                Dictionary<EE_DataChannel_t, double[]> currentData;
+                lock (this)
+                {
+                    // Query the neuroheadset for data.
+                    currentData = this.EmotivEngine.GetData(this.UserID); ;
+                }
 
-                if( currentData != null )
+                if (currentData != null)
                 {
                     //this.CurrentData = new ObservableDataFrame( currentData );
 
                     // Add the new data frame to the buffer.
-                    this.Buffer.AddFrame( currentData );
+                    this.Buffer.AddFrame(currentData);
 
                     // Notify clients that new a data frame is available. 
-                    dataPollingworker.ReportProgress( 0 );
+                    dataPollingworker.ReportProgress(0);
                 }
             }
         }
