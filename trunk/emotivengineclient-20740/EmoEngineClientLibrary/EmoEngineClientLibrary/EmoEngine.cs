@@ -52,8 +52,8 @@ namespace EmoEngineClientLibrary
 
         public void DataAcquisitionEnable(uint userId, bool enable)
         {
-            var ipep = new IPEndPoint(IPAddress.Any, 9010);
-            _socket.Bind(ipep);
+            var ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9011);
+            _socket.Connect(ipep);
         }
 
         public int DataGetSamplingRate(uint userId)
@@ -66,9 +66,9 @@ namespace EmoEngineClientLibrary
             throw new NotImplementedException();
         }
 
-        public void Connect()   
+        public void Connect()
         {
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             EmoEngineConnected(this, new EmoEngineEventArgs
                                      {
