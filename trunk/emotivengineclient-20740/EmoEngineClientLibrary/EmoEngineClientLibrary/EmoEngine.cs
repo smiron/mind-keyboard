@@ -4,29 +4,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace EmoEngineClientLibrary
 {
     public class EmoEngine
     {
-        const int _historySize = 64;
+        const int _historySize = 512;
 
-        private FixedSizedQueue<double> _chCounter = new FixedSizedQueue<double> { Limit = _historySize };
-
-        private FixedSizedQueue<double> _ch4 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch5 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch6 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch7 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch8 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch9 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch10 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch11 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch12 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch13 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch14 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch15 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch16 = new FixedSizedQueue<double> { Limit = _historySize };
-        private FixedSizedQueue<double> _ch17 = new FixedSizedQueue<double> { Limit = _historySize };
+        private Dictionary<EE_DataChannel_t, double[]> _dataDisctionary = new Dictionary<EE_DataChannel_t, double[]>();
 
         private Socket _socket;
         private static EmoEngine _instance;
@@ -54,11 +40,40 @@ namespace EmoEngineClientLibrary
         {
             var ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9011);
             _socket.Connect(ipep);
+
+            var thread = new Thread(new ThreadStart(CollecterThread));
+            thread.Start();
+        }
+
+        private void CollecterThread()
+        {
+            while (true)
+            {
+                var result = _socket.Receive(_buffer);
+
+                var stringData = Encoding.ASCII.GetString(_buffer, 0, result);
+
+                string[] parameters = stringData.Split(new [] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                int indexOfStart = 0;
+                if ((indexOfStart = Array.IndexOf(parameters, "start")) < 0)
+                {
+                    continue;
+                }
+
+                parameters = parameters.Skip(indexOfStart + 1).Take(18).ToArray();
+
+                foreach (var keyValue in _dataDisctionary)
+                {
+                    var newValue = double.Parse(parameters[(int)keyValue.Key]);
+                    AddToLastPosition(keyValue.Value, newValue);
+                }
+            }
         }
 
         public int DataGetSamplingRate(uint userId)
         {
-            return 999;
+            return 500;
         }
 
         public float EE_DataGetBufferSizeInSec()
@@ -68,12 +83,41 @@ namespace EmoEngineClientLibrary
 
         public void Connect()
         {
+            _dataDisctionary = new Dictionary<EE_DataChannel_t, double[]>();
+
+            _dataDisctionary.Add(EE_DataChannel_t.COUNTER, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+
+            _dataDisctionary.Add(EE_DataChannel_t.AF3, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
+            _dataDisctionary.Add(EE_DataChannel_t.AF4, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.F3, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.F4, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.F7, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.F8, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.FC5, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.FC6, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.O1, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.O2, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.P7, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.P8, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.T7, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.T8, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+
+
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             EmoEngineConnected(this, new EmoEngineEventArgs
                                      {
                                          userId = 0
                                      });
+        }
+
+        private void AddToLastPosition(double[] values, double newValue)
+        {
+            for (int i = 0; i < values.Length - 1; i++)
+            {
+                values[i] = values[i + 1];
+            }
+            values[values.Length - 1] = newValue;
         }
 
         public void Disconnect()
@@ -83,47 +127,7 @@ namespace EmoEngineClientLibrary
 
         public Dictionary<EE_DataChannel_t, double[]> GetData(uint userId)
         {
-            var result = _socket.Receive(_buffer);
-
-            var stringData = Encoding.ASCII.GetString(_buffer, 0, result);
-
-            string[] parameters = stringData.Split(',');
-
-            var ret = new Dictionary<EE_DataChannel_t, double[]>();
-
-            _chCounter.Enqueue(double.Parse(parameters[0]));
-            _ch4.Enqueue(double.Parse(parameters[4]));
-            _ch5.Enqueue(double.Parse(parameters[5]));
-            _ch6.Enqueue(double.Parse(parameters[6]));
-            _ch7.Enqueue(double.Parse(parameters[7]));
-            _ch8.Enqueue(double.Parse(parameters[8]));
-            _ch9.Enqueue(double.Parse(parameters[9]));
-            _ch10.Enqueue(double.Parse(parameters[10]));
-            _ch11.Enqueue(double.Parse(parameters[11]));
-            _ch12.Enqueue(double.Parse(parameters[12]));
-            _ch13.Enqueue(double.Parse(parameters[13]));
-            _ch14.Enqueue(double.Parse(parameters[14]));
-            _ch15.Enqueue(double.Parse(parameters[15]));
-            _ch16.Enqueue(double.Parse(parameters[16]));
-            _ch17.Enqueue(double.Parse(parameters[17]));
-
-            ret.Add(EE_DataChannel_t.COUNTER, _chCounter.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.AF3, _ch4.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.AF4, _ch5.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.F3, _ch6.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.F4, _ch7.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.F7, _ch8.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.F8, _ch9.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.FC5, _ch10.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.FC6, _ch11.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.O1, _ch12.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.O2, _ch13.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.P7, _ch14.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.P8, _ch15.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.T7, _ch16.Queue.ToArray());
-            ret.Add(EE_DataChannel_t.T8, _ch17.Queue.ToArray());
-
-            return ret;
+            return new Dictionary<EE_DataChannel_t, double[]>(_dataDisctionary);
         }
 
         public void ProcessEvents(int i)
