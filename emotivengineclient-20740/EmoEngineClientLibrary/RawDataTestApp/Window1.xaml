@@ -6,7 +6,8 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:emoclient="clr-namespace:EmoEngineClientLibrary;assembly=EmoEngineClientLibrary"
     xmlns:eecontrol="clr-namespace:EmoEngineControlLibrary;assembly=EmoEngineControlLibrary"
-    xmlns:local="clr-namespace:RawDataTestApp" Loaded="Window_Loaded" Closing="Window_Closing">
+    xmlns:local="clr-namespace:RawDataTestApp" Loaded="Window_Loaded" Closing="Window_Closing"
+        WindowState="Maximized">
 
     <Window.Resources>
         <emoclient:EmoEngineClient x:Key="emoEngineClient" />
@@ -74,7 +75,7 @@
                 <Label  Grid.Row="2" VerticalContentAlignment="Center" Padding="0" Foreground="{StaticResource VaLightBlueBrush}">Buffer Size</Label>
                 <Label Grid.Column="1" Grid.Row="2" Content="{Binding Source={StaticResource emoEngineClient}, Path=BufferSize}" Foreground="{StaticResource VaLightBlueBrush}"></Label>
                 <eecontrol:NeuroDataControl x:Name="_neuroDataControl" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" DataFrameSource="{StaticResource emoEngineClient}" ChannelsToDisplay="{StaticResource channelsToDisplay}" HorizontalAlignment="Stretch" BorderBrush="{StaticResource VaLightBorderBrush}" Foreground="{StaticResource VaLightBlueBrush}" />
-                <Label Height="28" Name="_watermarkLabel" Foreground="#99FFFFFF" Grid.Column="1" Margin="0" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto">Copyright © James Galasyn 2010</Label>
+                <Label Height="28" Name="_watermarkLabel" Foreground="#99FFFFFF" Grid.Column="1" Margin="0" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto"></Label>
 
             </Grid>
 

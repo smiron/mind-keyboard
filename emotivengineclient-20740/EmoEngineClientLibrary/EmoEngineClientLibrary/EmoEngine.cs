@@ -10,7 +10,7 @@ namespace EmoEngineClientLibrary
 {
     public class EmoEngine
     {
-        const int _historySize = 512;
+        const int _historySize = 256;
 
         private Dictionary<EE_DataChannel_t, double[]> _dataDisctionary = new Dictionary<EE_DataChannel_t, double[]>();
 
@@ -73,7 +73,7 @@ namespace EmoEngineClientLibrary
 
         public int DataGetSamplingRate(uint userId)
         {
-            return 500;
+            return 128;
         }
 
         public float EE_DataGetBufferSizeInSec()
@@ -88,11 +88,11 @@ namespace EmoEngineClientLibrary
             _dataDisctionary.Add(EE_DataChannel_t.COUNTER, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
 
             _dataDisctionary.Add(EE_DataChannel_t.AF3, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
-            _dataDisctionary.Add(EE_DataChannel_t.AF4, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
-            //_dataDisctionary.Add(EE_DataChannel_t.F3, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
-            //_dataDisctionary.Add(EE_DataChannel_t.F4, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
-            //_dataDisctionary.Add(EE_DataChannel_t.F7, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
-            //_dataDisctionary.Add(EE_DataChannel_t.F8, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
+            _dataDisctionary.Add(EE_DataChannel_t.AF4, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
+            _dataDisctionary.Add(EE_DataChannel_t.F3, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
+            _dataDisctionary.Add(EE_DataChannel_t.F4, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
+            _dataDisctionary.Add(EE_DataChannel_t.F7, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
+            //_dataDisctionary.Add(EE_DataChannel_t.F8, Enumerable.Range(0, _historySize).Select(x => 8500.0d).ToArray());
             //_dataDisctionary.Add(EE_DataChannel_t.FC5, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
             //_dataDisctionary.Add(EE_DataChannel_t.FC6, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
             //_dataDisctionary.Add(EE_DataChannel_t.O1, Enumerable.Range(0, _historySize).Select(x => 0.0d).ToArray());
