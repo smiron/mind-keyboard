@@ -21,10 +21,13 @@ namespace UI
         private int _gyroY;
         private volatile string[] _sensors = new string[14];
 
+        private volatile List<double[]> _sensorsMed = new List<double[]>();
+
+
         public LogisticRegression Regression;
         public List<double[]> NeutralInput;
         public List<double[]> ActionInput;
-        
+
         public bool ColectingNeutralData;
         public bool ColectingActionData;
 
@@ -55,7 +58,7 @@ namespace UI
                                                    if (result > 0)
                                                    {
                                                        var stringData = Encoding.ASCII.GetString(data, 0, result);
-                                                       string[] parameters = stringData.Split(',').Skip(1).ToArray();
+                                                       string[] parameters = stringData.Split(',');
 
                                                        var x = int.Parse(parameters[2]) - 3;
                                                        var y = int.Parse(parameters[3]);
@@ -74,6 +77,14 @@ namespace UI
                                                        _sensors[11] = parameters[15];
                                                        _sensors[12] = parameters[16];
                                                        _sensors[13] = parameters[17];
+                                                       
+                                                       //var doubleArray = new List<string>(_sensors).Select(double.Parse).ToArray();
+
+                                                       //_sensorsMed.Add(doubleArray);
+                                                       //if (_sensorsMed.Count > 20)
+                                                       //{
+                                                       //    _sensorsMed.RemoveAt(0);
+                                                       //}
 
                                                        lock (this)
                                                        {
@@ -81,7 +92,6 @@ namespace UI
                                                            _gyroY = y;
                                                        }
                                                    }
-
                                                }
                                            })).Start();
 
@@ -105,73 +115,73 @@ namespace UI
 
                         try
                         {
-                            
-                        if (Math.Abs(_gyroX) > Math.Abs(_gyroY))
-                        {
 
-                            if (_gyroX > xt)
-                            {
-                                if (!bt_a.IsKeyboardFocused && !bt_h.IsKeyboardFocused && !bt_o.IsKeyboardFocused && !bt_v.IsKeyboardFocused)
-                                {
-                                    var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
-                                                                        Keyboard.PrimaryDevice.ActiveSource, 0, Key.Left) { RoutedEvent = KeyDownEvent };
-                                    InputManager.Current.ProcessInput(keyEventArgs);
-                                    Thread.Sleep(sleep);
-                                }
-                            }
-                            else if (_gyroX < -xt)
-                            {
-                                if (!bt_g.IsKeyboardFocused && !bt_n.IsKeyboardFocused && !bt_u.IsKeyboardFocused && !bt_enter.IsKeyboardFocused)
-                                {
-                                    var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
-                                                                        Keyboard.PrimaryDevice.ActiveSource, 0,
-                                                                        Key.Right) { RoutedEvent = KeyDownEvent };
-                                    InputManager.Current.ProcessInput(keyEventArgs);
-                                    Thread.Sleep(sleep);
-                                }
-                            }
-                        }
-                        else
-                        {
-
-                            if (_gyroY > yt)
-                            {
-                                if (!bt_v.IsKeyboardFocused && !bt_x.IsKeyboardFocused && !bt_y.IsKeyboardFocused && !bt_z.IsKeyboardFocused && !bt_space.IsKeyboardFocused && !bt_erase.IsKeyboardFocused && !bt_enter.IsKeyboardFocused)
-                                {
-                                    var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
-                                                                        Keyboard.PrimaryDevice.ActiveSource, 0, Key.Down) { RoutedEvent = KeyDownEvent };
-                                    InputManager.Current.ProcessInput(keyEventArgs);
-                                    Thread.Sleep(sleep);
-                                }
-                            }
-                            else if (_gyroY < -yt)
+                            if (Math.Abs(_gyroX) > Math.Abs(_gyroY))
                             {
 
-                                if (!bt_a.IsKeyboardFocused && !bt_b.IsKeyboardFocused && !bt_c.IsKeyboardFocused && !bt_d.IsKeyboardFocused && !bt_e.IsKeyboardFocused && !bt_f.IsKeyboardFocused && !bt_g.IsKeyboardFocused)
+                                if (_gyroX > xt)
                                 {
-                                    var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
-                                                                        Keyboard.PrimaryDevice.ActiveSource, 0, Key.Up) { RoutedEvent = KeyDownEvent };
-                                    InputManager.Current.ProcessInput(keyEventArgs);
-                                    Thread.Sleep(sleep);
+                                    if (!bt_a.IsKeyboardFocused && !bt_h.IsKeyboardFocused && !bt_o.IsKeyboardFocused && !bt_v.IsKeyboardFocused)
+                                    {
+                                        var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
+                                                                            Keyboard.PrimaryDevice.ActiveSource, 0, Key.Left) { RoutedEvent = KeyDownEvent };
+                                        InputManager.Current.ProcessInput(keyEventArgs);
+                                        Thread.Sleep(sleep);
+                                    }
+                                }
+                                else if (_gyroX < -xt)
+                                {
+                                    if (!bt_g.IsKeyboardFocused && !bt_n.IsKeyboardFocused && !bt_u.IsKeyboardFocused && !bt_enter.IsKeyboardFocused)
+                                    {
+                                        var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
+                                                                            Keyboard.PrimaryDevice.ActiveSource, 0,
+                                                                            Key.Right) { RoutedEvent = KeyDownEvent };
+                                        InputManager.Current.ProcessInput(keyEventArgs);
+                                        Thread.Sleep(sleep);
+                                    }
                                 }
                             }
-                        }
-                        _gyroX = 0;
-                        _gyroY = 0;
+                            else
+                            {
+
+                                if (_gyroY > yt)
+                                {
+                                    if (!bt_v.IsKeyboardFocused && !bt_x.IsKeyboardFocused && !bt_y.IsKeyboardFocused && !bt_z.IsKeyboardFocused && !bt_space.IsKeyboardFocused && !bt_erase.IsKeyboardFocused && !bt_enter.IsKeyboardFocused)
+                                    {
+                                        var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
+                                                                            Keyboard.PrimaryDevice.ActiveSource, 0, Key.Down) { RoutedEvent = KeyDownEvent };
+                                        InputManager.Current.ProcessInput(keyEventArgs);
+                                        Thread.Sleep(sleep);
+                                    }
+                                }
+                                else if (_gyroY < -yt)
+                                {
+
+                                    if (!bt_a.IsKeyboardFocused && !bt_b.IsKeyboardFocused && !bt_c.IsKeyboardFocused && !bt_d.IsKeyboardFocused && !bt_e.IsKeyboardFocused && !bt_f.IsKeyboardFocused && !bt_g.IsKeyboardFocused)
+                                    {
+                                        var keyEventArgs = new KeyEventArgs(Keyboard.PrimaryDevice,
+                                                                            Keyboard.PrimaryDevice.ActiveSource, 0, Key.Up) { RoutedEvent = KeyDownEvent };
+                                        InputManager.Current.ProcessInput(keyEventArgs);
+                                        Thread.Sleep(sleep);
+                                    }
+                                }
+                            }
+                            _gyroX = 0;
+                            _gyroY = 0;
 
                         }
                         catch (Exception)
                         {
                         }
                     }
-                    
-                    text.Text = string.Join(" , ", _sensors);
-                    
+
+                    //text.Text = string.Join(" , ", _sensors);
+
                     if (Regression != null)
                     {
                         var doubleArray = new List<string>(_sensors).Select(double.Parse).ToArray();
                         var c = Regression.Compute(doubleArray);
-                        confidence.Value = (int) (c*100);
+                        confidence.Value = (int)(c * 100);
                     }
                     if (ColectingNeutralData)
                     {
@@ -187,6 +197,9 @@ namespace UI
                 }));
 
 
+                
+
+
             }
             finally
             {
@@ -194,6 +207,27 @@ namespace UI
             }
 
 
+        }
+
+
+        public double[] getVector()
+        {
+            var vect = new double[14];
+
+            foreach (var sens in _sensorsMed)
+            {
+                for (int i = 0; i < 14; i++)
+                {
+                    vect[i] += sens[i];
+                }
+            }
+
+            for (int i = 0; i < vect.Length; i++)
+            {
+                vect[i] = vect[i] / _sensorsMed.Count;
+            }
+
+            return vect;
         }
 
         private void ResetClick(object sender, RoutedEventArgs e)
@@ -344,13 +378,13 @@ namespace UI
         {
             if (text.Text.Length > 0)
             {
-                text.Text += text.Text.Substring(0, text.Text.Length - 1);
+                text.Text = text.Text.Substring(0, text.Text.Length - 1);
             }
         }
 
         private void bt_enter_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
 

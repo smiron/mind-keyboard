@@ -34,7 +34,7 @@ namespace UI
                 SetText("(...)");
                 _mainWindow.NeutralInput = new List<double[]>();
                 _mainWindow.ColectingNeutralData = true;
-                Thread.Sleep(30000);
+                Thread.Sleep(8000);
                 SetText("DONE COLECTING");
                 Thread.Sleep(1000);
                 _mainWindow.ColectingNeutralData = false;
@@ -54,7 +54,7 @@ namespace UI
                 SetText("(...)");
                 _mainWindow.ActionInput = new List<double[]>();
                 _mainWindow.ColectingActionData = true;
-                Thread.Sleep(10000);
+                Thread.Sleep(8000);
                 SetText("DONE COLECTING");
                 _mainWindow.ColectingActionData = false;
                 Thread.Sleep(1000);
